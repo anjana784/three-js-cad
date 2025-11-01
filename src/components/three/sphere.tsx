@@ -2,25 +2,25 @@ import * as THREE from "three";
 import { useEffect } from "react";
 import { useCanvas } from "../providers/canvas-provider";
 
-export const Cube = () => {
+export const Sphere = () => {
   const { addToScene, removeFromScene } = useCanvas();
 
   useEffect(() => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.SphereGeometry(0.5, 32, 32);
     const material = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
+      color: 0xff6b6b,
       metalness: 0.3,
       roughness: 0.4,
     });
-    const cube = new THREE.Mesh(geometry, material);
+    const sphere = new THREE.Mesh(geometry, material);
 
-    // Position the cube slightly above the grid
-    cube.position.y = 0.5;
+    // Position the sphere slightly above the grid
+    sphere.position.set(2, 0.5, 0);
 
-    addToScene(cube);
+    addToScene(sphere);
 
     return () => {
-      removeFromScene(cube);
+      removeFromScene(sphere);
       geometry.dispose();
       material.dispose();
     };

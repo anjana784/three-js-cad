@@ -2,25 +2,25 @@ import * as THREE from "three";
 import { useEffect } from "react";
 import { useCanvas } from "../providers/canvas-provider";
 
-export const Cube = () => {
+export const Cylinder = () => {
   const { addToScene, removeFromScene } = useCanvas();
 
   useEffect(() => {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
     const material = new THREE.MeshStandardMaterial({
-      color: 0x00ff00,
+      color: 0x4a90e2,
       metalness: 0.3,
       roughness: 0.4,
     });
-    const cube = new THREE.Mesh(geometry, material);
+    const cylinder = new THREE.Mesh(geometry, material);
 
-    // Position the cube slightly above the grid
-    cube.position.y = 0.5;
+    // Position the cylinder slightly above the grid
+    cylinder.position.set(-2, 0.5, 0);
 
-    addToScene(cube);
+    addToScene(cylinder);
 
     return () => {
-      removeFromScene(cube);
+      removeFromScene(cylinder);
       geometry.dispose();
       material.dispose();
     };

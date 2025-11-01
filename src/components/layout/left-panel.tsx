@@ -13,9 +13,9 @@ import {
 
 export const LeftPanel = () => {
   return (
-    <Sidebar variant="floating">
+    <Sidebar className="bg-[#2b2b2b]! border-r border-[#1a1a1a]">
       {/* assets panel header */}
-      <SidebarHeader>
+      <SidebarHeader className="bg-[#2b2b2b]">
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
@@ -28,7 +28,7 @@ export const LeftPanel = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-col gap-0.5 leading-none">
+                <div className="flex flex-col gap-0.5 leading-none text-white">
                   <span className="font-medium">CAD</span>
                   <span className="">v0.0.1</span>
                 </div>
@@ -38,14 +38,14 @@ export const LeftPanel = () => {
         </SidebarMenu>
       </SidebarHeader>
       {/* elements panel content*/}
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Elements</SidebarGroupLabel>
+      <SidebarContent className="bg-[#2b2b2b]">
+        <SidebarGroup className="bg-[#2b2b2b]">
+          <SidebarGroupLabel></SidebarGroupLabel>
           <SidebarGroupContent></SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       {/* assets panel footer*/}
-      <SidebarFooter></SidebarFooter>
+      <SidebarFooter className="bg-[#2b2b2b]"></SidebarFooter>
     </Sidebar>
   );
 };

@@ -4,19 +4,17 @@ import { RightPanel } from "@/components/layout/right-panel";
 import { CanvasProvider } from "@/components/providers/canvas-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Canvas } from "@/components/three/canvas";
-import { TestCube } from "./components/three/cube";
+// import { TestCube } from "./components/three/cube";
 
 function App() {
   return (
     <CanvasProvider>
       <SidebarProvider>
         <LeftPanel />
-        <SidebarInset>
+        <SidebarInset className="bg-[#3d3d3d]">
           <Header />
           <div className="h-[calc(100dvh-64px)]">
-            <Canvas>
-              <TestCube />
-            </Canvas>
+            <Canvas>{/* <TestCube /> */}</Canvas>
           </div>
         </SidebarInset>
         <RightPanel />

@@ -3,28 +3,35 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { useCanvas } from "../providers/canvas-provider";
 
 export const Canvas = ({ children }: { children?: ReactNode }) => {
-  const mountRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const { setContext } = useCanvas();
 
   useEffect(() => {
-    if (!mountRef.current) return;
+    if (!canvasRef.current || !containerRef.current) return;
+
+    const canvas = canvasRef.current;
+    const container = containerRef.current;
 
     // Initialize Scene, Camera and Renderer
     const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x1a1a1a);
+
     const camera = new THREE.PerspectiveCamera(
       75,
-      mountRef.current.clientWidth / mountRef.current.clientHeight,
+      container.clientWidth / container.clientHeight,
       0.1,
       1000
     );
     camera.position.z = 5;
 
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(
-      mountRef.current.clientWidth,
-      mountRef.current.clientHeight
-    );
-    mountRef.current.appendChild(renderer.domElement);
+    // Pass the canvas element to the renderer
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+    });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
 
     // Update the context with scene, camera and renderer
     setContext({ scene, camera, renderer });
@@ -37,28 +44,25 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
     animate();
 
     const handleResize = () => {
-      if (!mountRef.current) return;
-
-      const { clientWidth, clientHeight } = mountRef.current;
+      const { clientWidth, clientHeight } = container;
       camera.aspect = clientWidth / clientHeight;
       camera.updateProjectionMatrix();
       renderer.setSize(clientWidth, clientHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
     };
     window.addEventListener("resize", handleResize);
 
     return () => {
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(animationFrameId);
-      if (mountRef.current && renderer.domElement.parentElement) {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        mountRef.current.removeChild(renderer.domElement);
-      }
       renderer.dispose();
     };
-  }, [setContext]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="w-full h-full" ref={mountRef}>
+    <div className="w-full h-full" ref={containerRef}>
+      <canvas ref={canvasRef} className="w-full h-full block" />
       {children}
     </div>
   );

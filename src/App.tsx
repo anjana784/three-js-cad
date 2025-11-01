@@ -13,8 +13,7 @@ function App() {
         <LeftPanel />
         <SidebarInset>
           <Header />
-          <div className="h-[calc(100dvh-64px)] bg-amber-400">
-            {/* render canvas here */}
+          <div className="h-[calc(100dvh-64px)]">
             <Canvas>
               <TestCube />
             </Canvas>

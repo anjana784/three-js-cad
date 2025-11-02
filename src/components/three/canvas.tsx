@@ -6,7 +6,7 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 export const Canvas = ({ children }: { children?: ReactNode }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const { setContext } = useCanvas();
+  const { setContext, scene, selectedObject, setSelectedObject } = useCanvas();
 
   useEffect(() => {
     if (!canvasRef.current || !containerRef.current) return;
@@ -62,6 +62,34 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
     controls.maxDistance = 100;
     controls.maxPolarAngle = Math.PI / 2;
 
+    // Raycaster for object selection
+    const raycaster = new THREE.Raycaster();
+    const mouse = new THREE.Vector2();
+
+    // Handle click events for object selection
+    const handleClick = (event: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+
+      // Get all meshes in the scene (excluding helpers)
+      const selectableObjects = scene.children.filter(
+        (obj) => obj instanceof THREE.Mesh && obj.type === "Mesh"
+      );
+
+      const intersects = raycaster.intersectObjects(selectableObjects, false);
+
+      if (intersects.length > 0) {
+        setSelectedObject(intersects[0].object);
+      } else {
+        setSelectedObject(null);
+      }
+    };
+
+    canvas.addEventListener("click", handleClick);
+
     // Update the context with scene, camera and renderer
     setContext({ scene, camera, renderer });
 
@@ -84,6 +112,7 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      canvas.removeEventListener("click", handleClick);
       cancelAnimationFrame(animationFrameId);
       controls.dispose();
       renderer.dispose();
@@ -92,6 +121,28 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Visual feedback for selected object
+  useEffect(() => {
+    if (!scene) return;
+
+    // Reset all objects to default color
+    scene.children.forEach((obj) => {
+      if (
+        obj instanceof THREE.Mesh &&
+        obj.material instanceof THREE.MeshStandardMaterial
+      ) {
+        obj.material.emissive.setHex(0x000000);
+      }
+    });
+
+    // Highlight selected object
+    if (selectedObject && selectedObject instanceof THREE.Mesh) {
+      if (selectedObject.material instanceof THREE.MeshStandardMaterial) {
+        selectedObject.material.emissive.setHex(0x555500);
+      }
+    }
+  }, [selectedObject, scene]);
 
   return (
     <div className="w-full h-full" ref={containerRef}>

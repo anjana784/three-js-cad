@@ -7,11 +7,13 @@ export type CanvasContextState = {
   scene: THREE.Scene | null;
   camera: THREE.PerspectiveCamera | null;
   renderer: THREE.WebGLRenderer | null;
+  selectedObject: THREE.Object3D | null;
 };
 
 export type CanvasContextStateActions = {
   addToScene: (obj: THREE.Object3D) => void;
   removeFromScene: (obj: THREE.Object3D) => void;
+  setSelectedObject: (obj: THREE.Object3D | null) => void;
 };
 
 export type CanvasContextType = CanvasContextState &
@@ -24,6 +26,7 @@ export const CanvasProvider = ({ children }: { children: ReactNode }) => {
     scene: null,
     camera: null,
     renderer: null,
+    selectedObject: null,
   });
 
   const { scene } = contextState;
@@ -46,14 +49,19 @@ export const CanvasProvider = ({ children }: { children: ReactNode }) => {
     setContextState((prev) => ({ ...prev, ...context }));
   }, []);
 
+  const setSelectedObject = useCallback((obj: THREE.Object3D | null) => {
+    setContextState((prev) => ({ ...prev, selectedObject: obj }));
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       ...contextState,
       addToScene,
       removeFromScene,
       setContext,
+      setSelectedObject,
     }),
-    [contextState, addToScene, removeFromScene, setContext]
+    [contextState, addToScene, removeFromScene, setContext, setSelectedObject]
   );
 
   return (

@@ -18,7 +18,6 @@ export const LeftPanel = () => {
   const { addToScene } = useCanvas();
   return (
     <Sidebar className="bg-[#2b2b2b]! border-r border-[#1a1a1a]">
-      {/* assets panel header */}
       <SidebarHeader className="bg-[#2b2b2b]">
         <SidebarMenu>
           <SidebarMenuItem>
@@ -53,10 +52,10 @@ export const LeftPanel = () => {
                 onClick={() => {
                   const geometry = new THREE.BoxGeometry(1, 1, 1);
                   const material = new THREE.MeshStandardMaterial({
-                    color: 0x00ff00,
+                    color: 0xeeeeee,
                   });
                   const cube = new THREE.Mesh(geometry, material);
-                  cube.position.set(0, 0.5, 0);
+                  cube.position.set(0, 0, 0);
                   addToScene(cube);
                 }}
               >
@@ -70,10 +69,10 @@ export const LeftPanel = () => {
                 onClick={() => {
                   const geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
                   const material = new THREE.MeshStandardMaterial({
-                    color: 0x0000ff,
+                    color: 0xeeeeee,
                   });
                   const cylinder = new THREE.Mesh(geometry, material);
-                  cylinder.position.set(0, 0.5, 0);
+                  cylinder.position.set(0, 0, 0);
                   addToScene(cylinder);
                 }}
               >
@@ -87,10 +86,10 @@ export const LeftPanel = () => {
                 onClick={() => {
                   const geometry = new THREE.SphereGeometry(0.5, 32, 32);
                   const material = new THREE.MeshStandardMaterial({
-                    color: 0xff0000,
+                    color: 0xeeeeee,
                   });
                   const sphere = new THREE.Mesh(geometry, material);
-                  sphere.position.set(0, 0.5, 0);
+                  sphere.position.set(0, 0, 0);
                   addToScene(sphere);
                 }}
               >

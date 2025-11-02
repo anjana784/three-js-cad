@@ -2,10 +2,12 @@ import * as THREE from "three";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useCanvas } from "@/hooks/useCanvas";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { TransformControls } from "three/examples/jsm/controls/TransformControls.js";
 
 export const Canvas = ({ children }: { children?: ReactNode }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const transformControlsRef = useRef<TransformControls | null>(null);
   const { setContext, scene, selectedObject, setSelectedObject } = useCanvas();
 
   useEffect(() => {
@@ -62,6 +64,21 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
     controls.maxDistance = 100;
     controls.maxPolarAngle = Math.PI / 2;
 
+    // Add TransformControls
+    const transformControls = new TransformControls(
+      camera,
+      renderer.domElement
+    );
+    transformControls.setMode("translate");
+    transformControls.setSize(0.8);
+    scene.add(transformControls.getHelper());
+    transformControlsRef.current = transformControls;
+
+    // Disable OrbitControls when dragging with TransformControls
+    transformControls.addEventListener("dragging-changed", (event) => {
+      controls.enabled = !event.value;
+    });
+
     // Raycaster for object selection
     const raycaster = new THREE.Raycaster();
     const mouse = new THREE.Vector2();
@@ -74,7 +91,6 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
 
       raycaster.setFromCamera(mouse, camera);
 
-      // Get all meshes in the scene (excluding helpers)
       const selectableObjects = scene.children.filter(
         (obj) => obj instanceof THREE.Mesh && obj.type === "Mesh"
       );
@@ -89,6 +105,28 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
     };
 
     canvas.addEventListener("click", handleClick);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!transformControlsRef.current) return;
+
+      switch (event.key.toLowerCase()) {
+        case "g":
+          transformControlsRef.current.setMode("translate");
+          break;
+        case "r":
+          transformControlsRef.current.setMode("rotate");
+          break;
+        case "s":
+          transformControlsRef.current.setMode("scale");
+          break;
+        case "escape":
+        case "q":
+          setSelectedObject(null);
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
 
     // Update the context with scene, camera and renderer
     setContext({ scene, camera, renderer });
@@ -112,9 +150,11 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("keydown", handleKeyDown);
       canvas.removeEventListener("click", handleClick);
       cancelAnimationFrame(animationFrameId);
       controls.dispose();
+      transformControls.dispose();
       renderer.dispose();
       gridHelper.geometry.dispose();
       (gridHelper.material as THREE.Material).dispose();
@@ -122,7 +162,17 @@ export const Canvas = ({ children }: { children?: ReactNode }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Visual feedback for selected object
+  useEffect(() => {
+    const transformControls = transformControlsRef.current;
+    if (!transformControls) return;
+
+    if (selectedObject) {
+      transformControls.attach(selectedObject);
+    } else {
+      transformControls.detach();
+    }
+  }, [selectedObject]);
+
   useEffect(() => {
     if (!scene) return;
 

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useEffect } from "react";
-import { useCanvas } from "../providers/canvas-provider";
+import { useCanvas } from "@/hooks/useCanvas";
 
 export const Sphere = () => {
   const { addToScene, removeFromScene } = useCanvas();

@@ -10,8 +10,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Button } from "../ui/button";
+import { useCanvas } from "@/hooks/useCanvas";
+import * as THREE from "three";
 
 export const LeftPanel = () => {
+  const { addToScene } = useCanvas();
   return (
     <Sidebar className="bg-[#2b2b2b]! border-r border-[#1a1a1a]">
       {/* assets panel header */}
@@ -41,7 +45,20 @@ export const LeftPanel = () => {
       <SidebarContent className="bg-[#2b2b2b]">
         <SidebarGroup className="bg-[#2b2b2b]">
           <SidebarGroupLabel></SidebarGroupLabel>
-          <SidebarGroupContent></SidebarGroupContent>
+          <SidebarGroupContent>
+            <Button
+              onClick={() =>
+                addToScene(
+                  new THREE.Mesh(
+                    new THREE.BoxGeometry(),
+                    new THREE.MeshStandardMaterial({ color: "green" })
+                  )
+                )
+              }
+            >
+              Add cube
+            </Button>
+          </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       {/* assets panel footer*/}

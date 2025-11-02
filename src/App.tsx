@@ -4,9 +4,9 @@ import { RightPanel } from "@/components/layout/right-panel";
 import { CanvasProvider } from "@/components/providers/canvas-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { Canvas } from "@/components/three/canvas";
-import { Cube } from "./components/three/cube";
-import { Sphere } from "./components/three/sphere";
-import { Cylinder } from "./components/three/cylinder";
+// import { Cube } from "./components/three/cube";
+// import { Sphere } from "./components/three/sphere";
+// import { Cylinder } from "./components/three/cylinder";
 
 function App() {
   return (
@@ -17,9 +17,9 @@ function App() {
           <Header />
           <div className="h-[calc(100dvh-64px)]">
             <Canvas>
-              <Cube />
+              {/* <Cube />
               <Sphere />
-              <Cylinder />
+              <Cylinder /> */}
             </Canvas>
           </div>
         </SidebarInset>

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import { useEffect, useRef, type ReactNode } from "react";
-import { useCanvas } from "@/components/providers/canvas-provider";
+import { useCanvas } from "@/hooks/useCanvas";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
 export const Canvas = ({ children }: { children?: ReactNode }) => {
